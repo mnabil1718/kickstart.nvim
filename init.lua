@@ -173,6 +173,13 @@ vim.o.scrolloff = 10
 -- See `:help 'confirm'`
 vim.o.confirm = true
 
+-- [[ Folding ]]
+vim.keymap.set('n', '<leader>zz', function()
+  vim.opt_local.foldmethod = 'expr'
+  vim.opt_local.foldexpr = 'nvim_treesitter#foldexpr()'
+  vim.opt_local.foldlevel = 99
+end, { desc = 'Enable treesitter folding' })
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -782,7 +789,9 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
+        templ = { 'templ' },
         go = { 'gofmt', stop_after_first = true },
+        html = { 'prettier' },
         c = { 'clang-format' },
         cpp = { 'clang-format' },
         -- Conform can also run multiple formatters sequentially
@@ -905,20 +914,19 @@ require('lazy').setup({
     -- change the command in the config to whatever the name of that colorscheme is.
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
+    'catppuccin/nvim',
+    name = 'catppuccin',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('tokyonight').setup {
+      require('catppuccin').setup {
+        flavour = 'mocha', -- latte, frappe, macchiato, mocha
+        transparent_background = true, -- make background transparent, inherit terminal background
         styles = {
-          comments = { italic = false }, -- Disable italics in comments
+          comments = { 'italic' }, -- or {} to disable
         },
       }
-
       -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'catppuccin'
     end,
   },
 
