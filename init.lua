@@ -692,6 +692,7 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
+        protols = {},
         clangd = {},
         gopls = {},
         pyright = {},
@@ -716,6 +717,54 @@ require('lazy').setup({
               },
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
               -- diagnostics = { disable = { 'missing-fields' } },
+            },
+          },
+        },
+
+        intelephense = {
+          settings = {
+            intelephense = {
+              stubs = {
+                'bcmath',
+                'bz2',
+                'calendar',
+                'Core',
+                'curl',
+                'date',
+                'dom',
+                'fileinfo',
+                'filter',
+                'gd',
+                'hash',
+                'iconv',
+                'json',
+                'mbstring',
+                'mysqli',
+                'mysqlnd',
+                'openssl',
+                'pcre',
+                'PDO',
+                'pdo_mysql',
+                'Phar',
+                'readline',
+                'Reflection',
+                'session',
+                'SimpleXML',
+                'sodium',
+                'SPL',
+                'standard',
+                'tokenizer',
+                'xml',
+                'xmlreader',
+                'xmlwriter',
+                'zip',
+                'zlib',
+                -- Laravel-specific
+                'laravel',
+              },
+              environment = {
+                phpVersion = '8.3',
+              },
             },
           },
         },
@@ -782,7 +831,7 @@ require('lazy').setup({
           return nil
         else
           return {
-            timeout_ms = 500,
+            timeout_ms = 1000,
             lsp_format = 'fallback',
           }
         end
@@ -802,6 +851,8 @@ require('lazy').setup({
         css = { 'prettierd', 'prettier', stop_after_first = true },
         json = { 'prettierd', 'prettier', stop_after_first = true },
         markdown = { 'prettierd', 'prettier', stop_after_first = true },
+        php = { 'pint' },
+        blade = { 'blade-formatter' },
       },
     },
   },
@@ -977,7 +1028,25 @@ require('lazy').setup({
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc', 'go', 'tsx', 'css', 'astro' },
+      ensure_installed = {
+        'bash',
+        'c',
+        'diff',
+        'html',
+        'lua',
+        'luadoc',
+        'markdown',
+        'markdown_inline',
+        'query',
+        'vim',
+        'vimdoc',
+        'go',
+        'tsx',
+        'css',
+        'astro',
+        'php',
+        'php_only',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
