@@ -6,5 +6,13 @@ return {
     'tpope/vim-dotenv',
     'MunifTanjim/nui.nvim',
   },
-  config = true,
+  cond = function()
+    -- only enable on true laravel projects, not lumen PHP
+    return vim.fn.filereadable(vim.fn.getcwd() .. '/config/app.php') == 1
+  end,
+  opts = {
+    features = {
+      routes = { enable = false },
+    },
+  },
 }
