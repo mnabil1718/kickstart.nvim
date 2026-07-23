@@ -181,8 +181,23 @@ vim.opt.foldlevel = 99
 
 -- keep the keymap to toggle folding on/off
 vim.keymap.set('n', '<leader>zz', function()
-  vim.opt_local.foldenable = not vim.opt_local.foldenable:get()
+  vim.wo.foldenable = not vim.wo.foldenable
 end, { desc = 'Toggle folding' })
+
+-- Fix treesitter fold error after format-on-save
+-- Works around: /usr/share/nvim/runtime/lua/vim/treesitter/_fold.lua:258: invalid bot
+vim.api.nvim_create_autocmd('BufWritePost', {
+  group = vim.api.nvim_create_augroup('fix-treesitter-fold-after-write', { clear = true }),
+  callback = function()
+    vim.schedule(function()
+      if vim.wo.foldmethod == 'expr' then
+        pcall(function()
+          vim.cmd 'normal! zx'
+        end)
+      end
+    end)
+  end,
+})
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -433,10 +448,14 @@ require('lazy').setup({
         --  All the info you're looking for is in `:help telescope.setup()`
         --
         defaults = {
-          --   mappings = {
-          --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-          --   },
           hidden = true,
+          layout_strategy = 'horizontal',
+          layout_config = {
+            horizontal = {
+              preview_cutoff = 40, -- default is 120, lower = preview shows even in narrow splits
+              preview_width = 0.55,
+            },
+          },
         },
         -- pickers = {}
         extensions = {
@@ -841,7 +860,8 @@ require('lazy').setup({
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
+        -- local disable_filetypes = { c = true, cpp = true }
+        local disable_filetypes = {}
         if disable_filetypes[vim.bo[bufnr].filetype] then
           return nil
         else
